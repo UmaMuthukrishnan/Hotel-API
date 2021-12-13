@@ -116,4 +116,26 @@ class HotelControllerTest {
     ).andExpect(status().isNotFound());
   }
 
+  @Test
+  @DisplayName("When a requesting hotel id is already deleted then the status should be NotFound")
+  void getHotelWithDeletedHotelId() throws Exception {
+    mockMvc.perform(
+            delete("/hotel/{id}",1)
+    ).andExpect(status().is2xxSuccessful());
+
+    mockMvc.perform(get("/hotel/{id}",1))
+            .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("When a requesting hotel for delete is already deleted then the status should be NotFound")
+  void deleteHotelWithDeletedHotelId() throws Exception {
+    mockMvc.perform(
+            delete("/hotel/{id}",1)
+    ).andExpect(status().is2xxSuccessful());
+
+    mockMvc.perform(delete("/hotel/{id}",1))
+            .andExpect(status().isNotFound());
+  }
+
 }

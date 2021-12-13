@@ -33,23 +33,25 @@ public class CityHotelServiceImpl implements CityHotelService {
         final City city = cityRepository
                 .findById(cityId)
                 .orElseThrow(() -> new ElementNotFoundException("Could not find city with ID provided"));
-        final List<Hotel> cityHotelList = hotelRepository.findAll().stream()
+        final List<Hotel> cityHotelList = hotelRepository.findAllHotels().stream()
                 .filter(hotel -> cityId.equals(hotel.getCity().getId()))
                 .collect(Collectors.toList());
-        if (nonNull(distance) && isNotEmpty(cityHotelList)) {
-            cityHotelList.sort(Comparator.comparingDouble(h -> getDistance(city.getCityCentreLatitude(), city.getCityCentreLongitude(), h.getLatitude(), h.getLongitude())));
+        if ((nonNull(distance) && !distance.isEmpty()) && isNotEmpty(cityHotelList)) {
+            cityHotelList.sort(Comparator.comparingDouble(h -> getDistance(h.getLatitude(), h.getLongitude(), city.getCityCentreLatitude(), city.getCityCentreLongitude())));
         }
         return cityHotelList;
     }
 
-    public static double getDistance(double latitudeOne, double longitudeOne, double latitudeTwo, double longitudeTwo) {
-        final double R = 6371;
+    private static double getDistance(double latitudeOne, double longitudeOne, double latitudeTwo, double longitudeTwo) {
+        final double R = 6372.8;
         final double dLat = Math.toRadians(latitudeTwo - latitudeOne);
         final double dLon = Math.toRadians(longitudeTwo - longitudeOne);
         latitudeOne = Math.toRadians(latitudeOne);
         latitudeTwo = Math.toRadians(latitudeTwo);
-        double a = Math.pow(Math.sin(dLat / 2), 2) + Math.cos(latitudeOne) * Math.cos(latitudeTwo) * Math.pow(Math.sin(dLon / 2), 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double a =
+                Math.pow(Math.sin(dLat / 2), 2)
+                        + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(latitudeOne) * Math.cos(latitudeTwo);
+        double c = 2 * Math.asin(Math.sqrt(a));
         return R * c;
     }
 }

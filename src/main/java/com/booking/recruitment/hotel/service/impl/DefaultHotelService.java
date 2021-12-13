@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @Service
 class DefaultHotelService implements HotelService {
     private final HotelRepository hotelRepository;
@@ -46,15 +48,15 @@ class DefaultHotelService implements HotelService {
     @Override
     public Hotel getHotelById(Long hotelId) {
         return hotelRepository
-                .findById(hotelId)
+                .findHotelById(hotelId)
                 .orElseThrow(() -> new ElementNotFoundException("Could not find hotel with ID provided"));
     }
 
     @Override
     @Transactional
     public void deleteHotelById(Long hotelId) {
-        Hotel existingHotel = hotelRepository.findById(hotelId).orElseThrow(() -> new ElementNotFoundException("Could not find hotel with ID provided"));
-        if (existingHotel != null) {
+        Hotel existingHotel = getHotelById(hotelId);
+        if (nonNull(existingHotel)) {
             hotelRepository.deleteHotel(hotelId);
         }
     }

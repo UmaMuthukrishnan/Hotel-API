@@ -25,7 +25,7 @@ public class CityHotelController {
 
     @GetMapping("/search/{cityId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Hotel> getHotelsByCityAndDistance(@PathVariable("cityId") final Long cityId, @RequestParam(value = "sort", required = false) String distance) {
+    public List<Hotel> getHotelsByCityAndDistance(@PathVariable("cityId") final Long cityId, @RequestParam(value = "sortBy", required = false) String distance) {
         return cityHotelService.getHotelsByCityAndDistance(cityId, distance);
     }
 
