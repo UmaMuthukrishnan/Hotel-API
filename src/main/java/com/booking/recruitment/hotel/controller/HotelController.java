@@ -11,22 +11,36 @@ import java.util.List;
 @RestController
 @RequestMapping("/hotel")
 public class HotelController {
-  private final HotelService hotelService;
+    private final HotelService hotelService;
 
-  @Autowired
-  public HotelController(HotelService hotelService) {
-    this.hotelService = hotelService;
-  }
+    @Autowired
+    public HotelController(HotelService hotelService) {
 
-  @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public List<Hotel> getAllHotels() {
-    return hotelService.getAllHotels();
-  }
+        this.hotelService = hotelService;
+    }
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  public Hotel createHotel(@RequestBody Hotel hotel) {
-    return hotelService.createNewHotel(hotel);
-  }
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Hotel> getAllHotels() {
+        return hotelService.getAllHotels();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Hotel createHotel(@RequestBody Hotel hotel) {
+        return hotelService.createNewHotel(hotel);
+    }
+
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Hotel getHotel(@PathVariable("id") final Long hotelId) {
+        return hotelService.getHotelById(hotelId);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteHotel(@PathVariable("id") final Long hotelId) {
+        hotelService.deleteHotelById(hotelId);
+    }
+
 }

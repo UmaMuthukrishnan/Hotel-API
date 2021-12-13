@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,4 +81,39 @@ class HotelControllerTest {
                 () -> new IllegalStateException("New Hotel has not been saved in the repository")),
         equalTo(newHotel));
   }
+
+  @Test
+  @DisplayName("When a hotel is requested then it should be returned")
+  void hotelRequested() throws Exception {
+    mockMvc
+            .perform(get("/hotel/{id}",1))
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(jsonPath("$.name",equalTo("Monaghan Hotel")))
+            .andExpect(jsonPath("$.rating",equalTo(9.2)));
+  }
+
+  @Test
+  @DisplayName("When an invalid hotel id is requested then the status should be NotFound")
+  void hotelRequestedIsNotFound() throws Exception {
+    mockMvc
+            .perform(get("/hotel/{id}",11))
+            .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("When a hotel id is requested for delete then it should be deleted")
+  void deleteHotel() throws Exception {
+    mockMvc.perform(
+            delete("/hotel/{id}",1)
+    ).andExpect(status().is2xxSuccessful());
+  }
+
+  @Test
+  @DisplayName("When an invalid hotel is requested for delete then the status should be NotFound")
+  void deleteHotelWithInvalidHotelId() throws Exception {
+    mockMvc.perform(
+            delete("/hotel/{id}",11)
+    ).andExpect(status().isNotFound());
+  }
+
 }
